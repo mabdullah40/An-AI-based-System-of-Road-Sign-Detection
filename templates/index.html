@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Sign Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        input[type="file"] {
+            display: block;
+            margin: 20px auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+        .detections {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .detection-item {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Road Sign Detection</h1>
+        <form id="upload-form">
+            <input type="file" id="file-input" name="file">
+            <button type="submit">Upload and Detect</button>
+        </form>
+        <div id="result">
+            <img id="detected-image" src="" alt="Detected Image">
+            <div class="detections" id="detections"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/detect', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    alert('Error: ' + response.statusText);
+                    return;
+                }
+
+                const data = await response.json();
+
+                const imgElement = document.getElementById('detected-image');
+                imgElement.src = 'data:image/jpeg;base64,' + data.frame;
+
+                const detectionsElement = document.getElementById('detections');
+                detectionsElement.innerHTML = '';
+
+                data.detections.forEach(detection => {
+                    const div = document.createElement('div');
+                    div.className = 'detection-item';
+                    div.textContent = `${detection.class} (Confidence: ${detection.confidence})`;
+                    detectionsElement.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
