@@ -9,8 +9,10 @@ An-AI-based-System-of-Road-Sign-Detection is a real-time road sign detection app
 - Visual representation of detected signs with bounding boxes and labels
 - Confidence scores for each detected sign
 
-## Dataset 
-This dataset is available on kaggle
+## Dataset
+This dataset is available on Kaggle. You can access it using the following link:
+[Road Sign Detection Dataset of 49 Classes](https://www.kaggle.com/datasets/mohammadabdullah407/road-sign-detection-dataset-of-49-classes)
+
 
 ## Note
 - You have to extract each rar file and must maintain the following format to keep this model working.
